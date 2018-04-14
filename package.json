@@ -4,6 +4,8 @@
   "description": "simple, in-memory scheduler",
   "main": "lib/scheduler.js",
   "scripts": {
+    "lint": "standard",
+    "lint:fix": "standard --fix",
     "test": "tap test/*.test.js"
   },
   "repository": {
@@ -21,5 +23,9 @@
   "homepage": "https://github.com/joeledwards/node-scheduler#readme",
   "dependencies": {
     "functional-red-black-tree": "^1.0.1"
+  },
+  "devDependencies": {
+    "standard": "^11.0.1",
+    "tap": "^11.1.4"
   }
 }
