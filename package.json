@@ -1,0 +1,25 @@
+{
+  "name": "@buzuli/scheduler",
+  "version": "1.0.0",
+  "description": "simple, in-memory scheduler",
+  "main": "lib/scheduler.js",
+  "scripts": {
+    "test": "tap test/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joeledwards/node-scheduler.git"
+  },
+  "keywords": [
+    "scheduler"
+  ],
+  "author": "Joel Edwards <joeledwards@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/joeledwards/node-scheduler/issues"
+  },
+  "homepage": "https://github.com/joeledwards/node-scheduler#readme",
+  "dependencies": {
+    "functional-red-black-tree": "^1.0.1"
+  }
+}
