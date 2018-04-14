@@ -4,7 +4,7 @@ const scheduler = require('../lib/scheduler')
 tap.test('scheduler.at() schedules at a specific time', async assert => {
   let at
   const nowFunc = () => 3
-  const timerFunc = (when, _action) => at = when
+  const timerFunc = (when, _action) => { at = when }
   const sched = scheduler({nowFunc, timerFunc})
   sched.at(2, () => {})
   assert.equal(at, 2)
@@ -13,7 +13,7 @@ tap.test('scheduler.at() schedules at a specific time', async assert => {
 tap.test('scheduler.after() schedules after a delay', async assert => {
   let at
   const nowFunc = () => 3
-  const timerFunc = (when, _action) => at = when
+  const timerFunc = (when, _action) => { at = when }
   const sched = scheduler({nowFunc, timerFunc})
   sched.after(2, () => {})
   assert.equal(at, 5)
@@ -23,17 +23,15 @@ tap.test('scheduler triggers only when at == now ', async assert => {
   let now = 0
   const nowFunc = () => now
 
-  let at
   let act
   const timerFunc = (when, action) => {
-    at = when
     act = action
   }
 
   const sched = scheduler({nowFunc, timerFunc})
 
   let happening = false
-  sched.at(1, () => happening = true)
+  sched.at(1, () => { happening = true })
 
   act()
   assert.equal(happening, false)
@@ -47,17 +45,13 @@ tap.test('scheduler triggers only when at > now ', async assert => {
   let now = 0
   const nowFunc = () => now
 
-  let at
   let act
-  const timerFunc = (when, action) => {
-    at = when
-    act = action
-  }
+  const timerFunc = (when, action) => { act = action }
 
   const sched = scheduler({nowFunc, timerFunc})
 
   let happening = false
-  sched.at(1, () => happening = true)
+  sched.at(1, () => { happening = true })
 
   act()
   assert.equal(happening, false)
@@ -71,10 +65,8 @@ tap.test('scheduler triggers only once', async assert => {
   let now = 0
   const nowFunc = () => now
 
-  let at
   let act
   const timerFunc = (when, action) => {
-    at = when
     act = action
   }
 
