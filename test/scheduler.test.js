@@ -2,21 +2,21 @@ const tap = require('tap')
 const scheduler = require('../lib/scheduler')
 
 tap.test('scheduler.at() schedules at a specific time', async assert => {
-  let at
+  let after
   const nowFunc = () => 3
-  const timerFunc = (when, _action) => { at = when }
+  const timerFunc = (delay, _action) => { after = delay }
   const sched = scheduler({nowFunc, timerFunc})
   sched.at(2, () => {})
-  assert.equal(at, 2)
+  assert.equal(after, -1)
 })
 
 tap.test('scheduler.after() schedules after a delay', async assert => {
-  let at
+  let after
   const nowFunc = () => 3
-  const timerFunc = (when, _action) => { at = when }
+  const timerFunc = (delay, _action) => { after = delay }
   const sched = scheduler({nowFunc, timerFunc})
   sched.after(2, () => {})
-  assert.equal(at, 5)
+  assert.equal(after, 2)
 })
 
 tap.test('scheduler triggers only when at == now ', async assert => {
