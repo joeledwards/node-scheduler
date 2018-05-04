@@ -90,3 +90,71 @@ tap.test('scheduler triggers only once', async assert => {
   act()
   assert.equal(count, 1)
 })
+
+tap.test("scheduler doesn't trigger when paused", async assert => {
+  let now = 1
+  const nowFunc = () => now
+
+  let act
+  let cancelled = false
+  const timerFunc = (when, action) => {
+    act = () => {
+      if (!cancelled) {
+        action()
+      }
+    }
+
+    return () => {
+      cancelled = true
+    }
+  }
+
+  const sched = scheduler({nowFunc, timerFunc})
+
+  let count = 0
+  sched.at(1, () => count++)
+
+  assert.equal(cancelled, false)
+  sched.pause()
+  assert.equal(cancelled, true)
+
+  act()
+  assert.equal(count, 0)
+})
+
+tap.test('scheduler triggers after pause/resume cycle', async assert => {
+  let now = 1
+  const nowFunc = () => now
+
+  let act
+  let cancelled
+  const timerFunc = (when, action) => {
+    cancelled = false
+    act = () => {
+      if (!cancelled) {
+        action()
+      }
+    }
+
+    return () => {
+      cancelled = true
+    }
+  }
+
+  const sched = scheduler({nowFunc, timerFunc})
+
+  let count = 0
+  sched.at(1, () => count++)
+
+  assert.equal(cancelled, false)
+  sched.pause()
+  assert.equal(cancelled, true)
+
+  act()
+  assert.equal(count, 0)
+
+  sched.resume()
+  assert.equal(cancelled, false)
+  act()
+  assert.equal(count, 1)
+})
