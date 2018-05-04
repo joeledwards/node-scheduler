@@ -8,27 +8,27 @@ A simple, in-memory scheduler.
 ## Usage
 
 Import and initialize
-```JavaScript
+```javascript
 const scheduler = require('@buzuli/scheduler')()
 ```
 
 Schedule after a delay
-```JavaScript
+```javascript
 scheduler.after(1000, console.log('a second has elapsed'))
 ```
 
 Schedule at a specific time
-```JavaScript
+```javascript
 scheduler.at(Date.now + 500, console.log('half a second has elapsed'))
 ```
 
 Pause the scheduler (timer will be cleared, permitting a clean exit)
-```JavaScript
+```javascript
 scheduler.pause()
 ```
 
 Resume the scheduler (will immediately invoke all due or past-due actions)
-```JavaScript
+```javascript
 scheduler.resume()
 ```
 
