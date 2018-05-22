@@ -19,6 +19,33 @@ tap.test('scheduler.after() schedules after a delay', async assert => {
   assert.equal(after, 2)
 })
 
+tap.test('scheduler will not overwite other events scheduled at the same time', async assert => {
+  let now = 0
+  const nowFunc = () => now
+
+  let act
+  const timerFunc = (when, action) => {
+    act = action
+  }
+
+  const sched = scheduler({nowFunc, timerFunc})
+
+  let aCalled = false
+  let bCalled = false
+
+  sched.at(1, () => { aCalled = true })
+  sched.at(1, () => { bCalled = true })
+
+  act()
+  assert.equal(aCalled, false)
+  assert.equal(bCalled, false)
+
+  now = 1
+  act()
+  assert.equal(aCalled, true)
+  assert.equal(bCalled, true)
+})
+
 tap.test('scheduler triggers only when at == now ', async assert => {
   let now = 0
   const nowFunc = () => now
@@ -89,6 +116,76 @@ tap.test('scheduler triggers only once', async assert => {
   now = 2
   act()
   assert.equal(count, 1)
+})
+
+tap.test("scheduler wont't trigger a cancelled operation", async assert => {
+  let now = 0
+  const nowFunc = () => now
+
+  let act
+  const timerFunc = (when, action) => {
+    act = action
+  }
+
+  const sched = scheduler({nowFunc, timerFunc})
+
+  let aCalled = false
+  let bCalled = false
+
+  let aRef = sched.at(1, () => { aCalled = true })
+  sched.at(1, () => { bCalled = true })
+
+  act()
+  assert.equal(aCalled, false)
+  assert.equal(bCalled, false)
+
+  aRef.cancel()
+
+  now = 1
+  act()
+  assert.equal(aCalled, false)
+  assert.equal(bCalled, true)
+})
+
+tap.test("scheduler supports cancelling mulitple, select operations", async assert => {
+  let now = 0
+  const nowFunc = () => now
+
+  let act
+  const timerFunc = (when, action) => {
+    act = action
+  }
+
+  const sched = scheduler({nowFunc, timerFunc})
+
+  let aCalled = false
+  let bCalled = false
+  let cCalled = false
+  let dCalled = false
+  let eCalled = false
+
+  sched.at(1, () => { aCalled = true })
+  sched.at(1, () => { bCalled = true }, 'cancelMe')
+  sched.at(2, () => { cCalled = true })
+  sched.at(3, () => { dCalled = true }, 'cancelMe')
+  sched.at(3, () => { eCalled = true })
+
+  act()
+  assert.equal(aCalled, false)
+  assert.equal(bCalled, false)
+  assert.equal(cCalled, false)
+  assert.equal(dCalled, false)
+  assert.equal(eCalled, false)
+
+  sched.cancel(({context, when}) => when === 2 || context === 'cancelMe')
+
+  now = 3
+  act()
+  assert.equal(aCalled, true)
+  assert.equal(bCalled, false)
+  assert.equal(cCalled, false)
+  assert.equal(dCalled, false)
+  assert.equal(eCalled, true)
 })
 
 tap.test("scheduler doesn't trigger when paused", async assert => {
