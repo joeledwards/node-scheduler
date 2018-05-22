@@ -147,7 +147,7 @@ tap.test("scheduler wont't trigger a cancelled operation", async assert => {
   assert.equal(bCalled, true)
 })
 
-tap.test("scheduler supports cancelling mulitple, select operations", async assert => {
+tap.test('scheduler supports cancelling mulitple, select operations', async assert => {
   let now = 0
   const nowFunc = () => now
 
